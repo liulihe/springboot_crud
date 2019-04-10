@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<title>Good Thymes Virtual Grocery</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+<body>  
+
+	<!-- 取出单个域中的值 -->
+	<p th:text="${hello}"></p>
+	<p th:utext="${hello}"></p>
+	
+	<!-- 遍历map -->
+	<tr th:each="desk : ${mydesk}">
+		<td th:text="${desk.color}"></td>
+		<td th:text="${desk.size}"></td>
+		<td th:text="${flag}? 'true' : 'false'"></td>
+	</tr>
+	
+	<!-- 遍历map -->
+	<h3 th:each="desk : ${mydesk}" th:text="${desk.color}+','+${desk.size}"></h3>
+	
+	<!-- 遍历map 使用直接插入-->
+	<h3>
+		<span  th:each="desk : ${mydesk}" >[[${desk.color}]],[[${desk.size}]]</span>
+	</h3>
+	
+</body>
+</html>

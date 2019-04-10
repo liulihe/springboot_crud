@@ -1,0 +1,41 @@
+添加了jquery的依赖后，从<link th:href="@{/webjars/bootstrap/3.3.1/css/bootstrap.min.css}" 
+rel="stylesheet">引入依赖，即当发送/webjars/**请求后，会从/META-INF/resources/webjars/下引入资源
+
+源码在这里（WebMvcAutoConfiguration）：
+	@Override
+		public void addResourceHandlers(ResourceHandlerRegistry registry) {
+			if (!this.resourceProperties.isAddMappings()) {
+				logger.debug("Default resource handling disabled");
+				return;
+			}
+			Duration cachePeriod = this.resourceProperties.getCache().getPeriod();
+			CacheControl cacheControl = this.resourceProperties.getCache()
+					.getCachecontrol().toHttpCacheControl();
+			if (!registry.hasMappingForPattern("/webjars/**")) {
+				customizeResourceHandlerRegistration(registry
+						.addResourceHandler("/webjars/**")
+						.addResourceLocations("classpath:/META-INF/resources/webjars/")
+						.setCachePeriod(getSeconds(cachePeriod))
+						.setCacheControl(cacheControl));
+			}
+			String staticPathPattern = this.mvcProperties.getStaticPathPattern();
+			if (!registry.hasMappingForPattern(staticPathPattern)) {
+				customizeResourceHandlerRegistration(
+						registry.addResourceHandler(staticPathPattern)
+								.addResourceLocations(getResourceLocations(
+										this.resourceProperties.getStaticLocations()))
+								.setCachePeriod(getSeconds(cachePeriod))
+								.setCacheControl(cacheControl));
+			}
+		}
+
+
+一般将静态资源放在/public  /resources /static目录下，这些目录下的静态资源，访问时如果
+没有配置项目根路径，即可这样访问：http://localhost:8080/asserts/css/signin.css
+不需要指定前面的public  resources  static
+
+要展示的页面也是静态资源，但一般情况下放在templates目录下，因为这样的话，可以使用模板引擎进行解析
+此目录下的资源不能直接访问，类似于WEB-INF下的资源
+
+在测试包下的controller不会进行资源映射
+
