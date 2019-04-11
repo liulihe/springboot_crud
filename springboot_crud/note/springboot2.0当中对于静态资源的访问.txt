@@ -1,0 +1,35 @@
+spring2.0不添加拦截器时，对于静态资源的访问
+	直接访问http://localhost:8080/camgr/asserts/css/signin.css即可
+
+
+spring2.0添加拦截器时，对于静态资源的访问
+		
+	@Override
+	public void addInterceptors(InterceptorRegistry registry) {
+		registry.addInterceptor(new LoginInterceptor()).addPathPatterns("/**")
+				.excludePathPatterns("/", "/index.html","/login.html", "/webjars/**","/static/**");
+		WebMvcConfigurer.super.addInterceptors(registry);
+	}
+	如果配置了拦截器
+	对所有资源进行拦截：addPathPatterns("/**")
+	此时，是真的对所有请求进行拦截了，包括静态资源，如果还想静态 资源不被 拦截，必须
+	配置：excludePathPatterns("/webjars/**","/static/**");
+	让webjar中的静态资源和static（public、resources目录都一样）目录下的
+	静态资源排除掉
+	
+	同时，必须配置：
+	@Override
+	public void addResourceHandlers(ResourceHandlerRegistry registry) {
+		registry.addResourceHandler("/static/**").addResourceLocations("classpath:/static/");
+	}
+	让/static（public、resources目录都一样）类路径下的资源为标示为静态资源
+	
+	同时，访问/static（public、resources目录都一样）下的静态资源时，也有所不同，
+	如果不配置addResourceHandlers和addInterceptors，那么访问静态资源时这样：
+	http://localhost:8080/camgr/asserts/css/signin.css，即不需要在
+	项目根路径后添加static/，但配置了访问时就必须在项目根路径后添加static/
+		
+		
+		
+		
+		

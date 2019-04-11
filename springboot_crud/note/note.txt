@@ -39,3 +39,5 @@ rel="stylesheet">引入依赖，即当发送/webjars/**请求后，会从/META-I
 
 在测试包下的controller不会进行资源映射
 
+使用application.properties可以覆盖自动配置的信息，覆盖的是自动配置类中的属性等一些信息
+

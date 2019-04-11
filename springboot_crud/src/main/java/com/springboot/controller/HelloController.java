@@ -10,6 +10,7 @@ import com.springboot.entity.Desk;
 
 @Controller
 public class HelloController {
+
 	@RequestMapping("/hello")
 	@ResponseBody
 	public String hello() {
@@ -24,4 +25,5 @@ public class HelloController {
 		map.put("flag", false);
 		return "success";
 	}
+
 }

@@ -1,0 +1,70 @@
+MessageSourceAutoConfiguration自动配置类中已经默认配置好了MessageSource
+用来 管理国际化相关的资源
+
+	@Bean
+	public MessageSource messageSource(MessageSourceProperties properties) {
+		ResourceBundleMessageSource messageSource = new ResourceBundleMessageSource();
+		if (StringUtils.hasText(properties.getBasename())) {
+			
+			//用来设置一个基础名（即国际化资源文件 去掉语言国家后的名称）
+			messageSource.setBasenames(StringUtils.commaDelimitedListToStringArray(
+					StringUtils.trimAllWhitespace(properties.getBasename())));
+		}
+		if (properties.getEncoding() != null) {
+			messageSource.setDefaultEncoding(properties.getEncoding().name());
+		}
+		messageSource.setFallbackToSystemLocale(properties.isFallbackToSystemLocale());
+		Duration cacheDuration = properties.getCacheDuration();
+		if (cacheDuration != null) {
+			messageSource.setCacheMillis(cacheDuration.toMillis());
+		}
+		messageSource.setAlwaysUseMessageFormat(properties.isAlwaysUseMessageFormat());
+		messageSource.setUseCodeAsDefaultMessage(properties.isUseCodeAsDefaultMessage());
+		return messageSource;
+	}
+	
+	
+	
+	//可以在全局配置文件中修改一些默认配置
+	@Bean
+	@ConfigurationProperties(prefix = "spring.messages")
+	public MessageSourceProperties messageSourceProperties() {
+		return new MessageSourceProperties();
+	}
+	
+	
+	//默认基础名为messages
+	public ConditionOutcome getMatchOutcome(ConditionContext context,
+			AnnotatedTypeMetadata metadata) {
+		String basename = context.getEnvironment()
+				.getProperty("spring.messages.basename", "messages");
+		ConditionOutcome outcome = cache.get(basename);
+		if (outcome == null) {
+			outcome = getMatchOutcomeForBasename(context, basename);
+			cache.put(basename, outcome);
+		}
+		return outcome;
+	}
+	
+	
+	
+	在浏览器切换相关语言环境，可以显示不同环境下的语言文字信息，原因就是有Locale类（区域信息对象）来帮助
+	我们在每次发送请求时，将请求头中的相关地区信息进行解析，springboot在WebMvcAutoConfiguration
+	类中已经配置了LocaleResovler（也可以在全局配置文件中覆盖相关配置）：
+		@Bean
+		@ConditionalOnMissingBean      //如果自己配置了LocaleResolver就不使用默认配置的了
+		@ConditionalOnProperty(prefix = "spring.mvc", name = "locale")
+		public LocaleResolver localeResolver() {
+			if (this.mvcProperties
+					.getLocaleResolver() == WebMvcProperties.LocaleResolver.FIXED) {
+				return new FixedLocaleResolver(this.mvcProperties.getLocale());
+			}
+			AcceptHeaderLocaleResolver localeResolver = new AcceptHeaderLocaleResolver();
+			localeResolver.setDefaultLocale(this.mvcProperties.getLocale());
+			return localeResolver;
+		}
+		
+		
+		
+	我们可以自己设定一个locale组件，不使用springboot提供的，这样就可以在网页中自由切换语言环境了：
+	
