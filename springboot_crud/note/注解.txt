@@ -1,0 +1,7 @@
+
+@Mapper
+	指定为一个访问数据的mapper
+	
+	
+@MapperScans(value = { @MapperScan(basePackages = { "com.springboot.dao" }) })
+	如果mapper有很多，可以不用在每个类上使用@Mapper注解，而是使用这个注解，进行全盘扫面

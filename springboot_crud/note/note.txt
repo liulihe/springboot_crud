@@ -41,3 +41,14 @@ rel="stylesheet">引入依赖，即当发送/webjars/**请求后，会从/META-I
 
 使用application.properties可以覆盖自动配置的信息，覆盖的是自动配置类中的属性等一些信息
 
+访问数据库时：
+Loading class `com.mysql.jdbc.Driver'. This is deprecated. 
+The new driver class is `com.mysql.cj.jdbc.Driver'. The driver 
+is automatically registered via the SPI and manual loading of
+the driver class is generally unnecessary.
+
+springboot报错The server time zone value 'ÖÐ¹ú±ê×¼Ê±¼ä' 
+is unrecognized or represents more than one
+	修改为：
+	spring.datasource.url=jdbc:mysql://localhost:3306/exercise?serverTimezone=GMT%2B8&useUnicode=true&characterEncoding=utf-8
+	即可

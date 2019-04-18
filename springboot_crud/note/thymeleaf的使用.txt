@@ -1,11 +1,3 @@
-<!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-<head>
-<title>Good Thymes Virtual Grocery</title>
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-</head>
-<body>  
-
 	<!-- 取出单个域中的值 -->
 	<p th:text="${hello}"></p>
 	<p th:utext="${hello}"></p>
@@ -24,6 +16,3 @@
 	<h3>
 		<span  th:each="desk : ${mydesk}" >[[${desk.color}]],[[${desk.size}]]</span>
 	</h3>
-	
-</body>
-</html>

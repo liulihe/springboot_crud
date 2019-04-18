@@ -1,4 +1,4 @@
-package com.springboot.specifiedcomponeng;
+package com.springboot.component;
 
 import java.util.Locale;
 

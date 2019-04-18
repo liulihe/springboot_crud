@@ -1,6 +1,9 @@
 package com.springboot.config;
 
+import javax.sql.DataSource;
+
 import org.springframework.boot.autoconfigure.web.servlet.WebMvcRegistrations;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.LocaleResolver;
@@ -9,8 +12,9 @@ import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry
 import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
-import com.springboot.specifiedcomponeng.LoginInterceptor;
-import com.springboot.specifiedcomponeng.MyLocaleResolver;
+import com.alibaba.druid.pool.DruidDataSource;
+import com.springboot.component.LoginInterceptor;
+import com.springboot.component.MyLocaleResolver;
 
 /**
  * If you want to take complete control of Spring MVC, you can add your
@@ -21,7 +25,7 @@ import com.springboot.specifiedcomponeng.MyLocaleResolver;
 public class MyMvcConfig implements WebMvcConfigurer {
 
 	/**
-	 * access url return to specified view
+	 * 制定url和视图映射
 	 */
 	@Override
 	public void addViewControllers(ViewControllerRegistry registry) {
@@ -46,8 +50,8 @@ public class MyMvcConfig implements WebMvcConfigurer {
 	}
 
 	/**
-	 * use specified LocaleResolver and not use springboot autoconfiguration
-	 * LocaleResolver
+	 * 
+	 * 添加一个LocaleResolver
 	 */
 	@Bean
 	public LocaleResolver getLocaleResolver() {
@@ -55,8 +59,7 @@ public class MyMvcConfig implements WebMvcConfigurer {
 	}
 
 	/**
-	 * given specified interceptor do login validation,exclude static resources
-	 * and specified login url
+	 * 添加登录拦截器，排除静态资源的路径，登录相关的路径
 	 */
 	@Override
 	public void addInterceptors(InterceptorRegistry registry) {
@@ -66,10 +69,19 @@ public class MyMvcConfig implements WebMvcConfigurer {
 	}
 
 	/**
-	 * indicated static resources
+	 * 指定静态文件
 	 */
 	@Override
 	public void addResourceHandlers(ResourceHandlerRegistry registry) {
 		registry.addResourceHandler("/static/**").addResourceLocations("classpath:/static/");
+	}
+
+	/**
+	 * 使用阿里巴巴德鲁伊数据库连接池，使用自定义的bean，否则，在yml中配置的druid连接池的配置无效
+	 */
+	@Bean
+	@ConfigurationProperties("spring.datasource")
+	public DataSource getDruidDataSource() {
+		return new DruidDataSource();
 	}
 }
