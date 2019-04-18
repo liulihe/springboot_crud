@@ -19,6 +19,9 @@ public class MemberController {
 
 	Logger logger = LoggerFactory.getLogger(MemberController.class);
 
+	/**
+	 * 会员信息
+	 */
 	@GetMapping("/member")
 	public String getMembers(Model model) {
 		List<TMember> members = tMemberServiceImp.getMembers();
